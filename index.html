@@ -3,200 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星運娛樂城 - 營運總後台</title>
+    <title>星運娛樂城 - UAT 驗收中心</title>
     <style>
-        /* === 1. 全局設定 === */
-        :root {
-            --bg-dark: #1a1a2e;      /* 整體深底 */
-            --sidebar-bg: #11111f;   /* 側邊欄更深 */
-            --bg-card: #16213e;      /* 卡片底 */
-            --text-primary: #e0e0e0;
-            --text-secondary: #a0a0a0;
-            --accent-green: #0f9d58;
-            --accent-red: #db4437;
-            --active-item: #2c2c45;  /* 選中項目的背景 */
-            --border-color: #303050;
-        }
-
-        body {
-            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            margin: 0;
-            padding: 0;
-            display: flex; /* 關鍵：讓左右並排 */
-            height: 100vh;
-            overflow: hidden; /* 防止雙卷軸 */
-        }
-
-        /* === 2. 左側導覽列 (Sidebar) - 依照 Spec 功能樹 [cite: 47] === */
-        .sidebar {
-            width: 240px;
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-        }
-
-        .logo-area {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
-            letter-spacing: 1px;
-        }
-
-        .menu {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 0;
-        }
-
-        .menu-category {
-            font-size: 12px;
-            color: #666;
-            padding: 10px 20px 5px;
-            text-transform: uppercase;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: 0.2s;
-            font-size: 14px;
-            border-left: 3px solid transparent;
-        }
-
-        .menu-item:hover {
-            background-color: rgba(255,255,255,0.05);
-            color: #fff;
-        }
-
-        /* 當前選中狀態 */
-        .menu-item.active {
-            background-color: var(--active-item);
-            color: #fff;
-            border-left-color: var(--accent-green);
-        }
-
-        .icon { margin-right: 10px; width: 16px; text-align: center; }
-
-        /* === 3. 右側內容區 (Main Content) === */
-        .main-content {
-            flex: 1;
-            overflow-y: auto; /* 內容過長時捲動 */
-            padding: 30px;
-        }
-
-        /* 下面是原本 KPI 牆的樣式 (保持不變) */
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
-        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
-        .card { background-color: var(--bg-card); border-radius: 8px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.2); position: relative; }
-        .kpi-title { font-size: 14px; color: var(--text-secondary); margin-bottom: 10px; display: flex; justify-content: space-between; }
-        .kpi-value { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
-        .kpi-trend { font-size: 13px; font-weight: 500; }
-        .trend-up { color: var(--accent-green); }
-        .trend-down { color: var(--accent-red); }
-        .note { font-size: 11px; color: #666; margin-top: 8px; font-style: italic; }
-        .badge { background: #333; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #ccc; }
-        .alert-border { border: 2px solid var(--accent-red) !important; box-shadow: 0 0 15px rgba(219, 68, 55, 0.2); }
-        .chart-row { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; height: 320px; }
-        .stacked-bar-container { margin-top: 40px; width: 100%; height: 50px; display: flex; border-radius: 6px; overflow: hidden; }
-        .bar-segment { height: 100%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: bold; position: relative; }
-        .bar-segment::after { content: attr(data-label); position: absolute; top: -25px; color: #ccc; font-size: 12px; white-space: nowrap; }
-        .svg-container { width: 100%; height: 100%; display: flex; align-items: flex-end; position: relative; }
-        svg { width: 100%; height: 100%; overflow: visible; }
-        .line-today { fill: none; stroke: #0f9d58; stroke-width: 3; }
-        .line-day7  { fill: none; stroke: #ffce56; stroke-width: 2; stroke-dasharray: 6, 4; }
-        .line-day30 { fill: none; stroke: #36a2eb; stroke-width: 2; stroke-dasharray: 2, 4; }
-        .grid-line  { stroke: #303050; stroke-width: 1; }
-        .legend { display: flex; gap: 15px; margin-top: 15px; font-size: 12px; justify-content: center; }
-        .legend-item { display: flex; align-items: center; gap: 5px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        body { font-family: 'Microsoft JhengHei', sans-serif; background: #f0f2f5; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .menu-card { background: white; width: 100%; max-width: 480px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #1a1a2e; padding: 40px 30px; color: white; text-align: center; }
+        .header h1 { margin: 0; font-size: 26px; letter-spacing: 1px; }
+        .header p { margin: 10px 0 0; color: #a0a0a0; font-size: 14px; }
+        .list { padding: 10px 0; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; transition: 0.2s; }
+        .item:hover { background-color: #f8f9fa; padding-left: 35px; color: #0f9d58; }
+        .item:last-child { border-bottom: none; }
+        .tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
+        .done { background: #e6f4ea; color: #1e8e3e; }
+        .todo { background: #f1f3f4; color: #80868b; }
     </style>
 </head>
 <body>
-
-    <div class="sidebar">
-        <div class="logo-area">
-            🌟 星運娛樂城
+    <div class="menu-card">
+        <div class="header">
+            <h1>🌟 星運娛樂城 UAT</h1>
+            <p>營運總後台規格驗收標準 (Spec V2.1)</p>
         </div>
-        <div class="menu">
-            <div class="menu-category">總覽 (Overview)</div>
-            <a href="#" class="menu-item active">
-                <span class="icon">📊</span> 即時 KPI 牆
+        <div class="list">
+            <a href="pages/kpi_dashboard.html" class="item">
+                <span style="font-weight:bold;">📊 即時 KPI 戰情室</span>
+                <span class="tag done">已完成</span>
             </a>
             
-            <div class="menu-category">營運分析 (Analytics)</div>
-            <a href="#" class="menu-item"><span class="icon">👥</span> 登入數據</a>
-            <a href="#" class="menu-item"><span class="icon">📈</span> 營運報表</a>
-            <a href="#" class="menu-item"><span class="icon">🔄</span> 留存率 Cohort</a>
-
-            <div class="menu-category">金流管理 (Finance)</div>
-            <a href="#" class="menu-item"><span class="icon">💰</span> 金幣數據</a>
-            <a href="#" class="menu-item"><span class="icon">💳</span> 儲值報表</a>
-
-            <div class="menu-category">遊戲管理 (Games)</div>
-            <a href="#" class="menu-item"><span class="icon">🎰</span> 遊戲明細</a>
-
-            <div class="menu-category" style="color: #db4437;">風控中心 (Risk)</div>
-            <a href="#" class="menu-item"><span class="icon">🛡️</span> 高風險明細</a>
-        </div>
-        
-        <a href="../index.html" class="menu-item" style="border-top: 1px solid #303050;">
-            <span class="icon">🔙</span> 返回規格目錄
-        </a>
-    </div>
-
-    <div class="main-content">
-        <div class="header">
-            <div>
-                <h1>📊 即時 KPI 戰情室 (Live Spec)</h1>
-                <span style="font-size: 12px; color: #888;">Spec V2.1 | UAT 視覺標準 | 60s 更新</span>
-            </div>
-            <div style="text-align: right;">
-                <div>2025-11-26 14:30:00</div>
-                <div style="color: var(--accent-green); font-size: 12px;">● 系統連線正常</div>
-            </div>
-        </div>
-
-        <div class="grid-container">
-            <div class="card alert-border">
-                <div class="kpi-title">RTP (殺率)<span class="badge">Float (2)</span></div>
-                <div class="kpi-value">102.50</div>
-                <div class="kpi-trend trend-down">▲ 5.2% (Vs.昨日)</div>
-                <div class="note" style="color: var(--accent-red);">*Spec: >100 必須紅框警示</div>
-            </div>
-            <div class="card">
-                <div class="kpi-title">GGR (平台毛利)<span class="badge">Net Profit</span></div>
-                <div class="kpi-value">$ 1,250,800</div>
-                <div class="kpi-trend trend-up">▲ 5.5% (Vs.昨日)</div>
-                <div class="note">*Spec: <0 必須紅框警示</div>
-            </div>
-            <div class="card"><div class="kpi-title">PU (付費人數)</div><div class="kpi-value">3,542</div><div class="kpi-trend trend-up">▲ 2.1%</div></div>
-            <div class="card"><div class="kpi-title">NU (新註冊)</div><div class="kpi-value">450</div><div class="kpi-trend trend-down">▼ 0.5%</div></div>
-        </div>
-
-        <div class="chart-row">
-            <div class="card">
-                <div class="kpi-title">Revenue (堆疊結構 Spec)</div><div class="kpi-value">$ 3,000,000</div><div class="note">Spec: 顯示 PC / Android / iOS 佔比</div>
-                <div class="stacked-bar-container"><div class="bar-segment" style="width: 40%; background: #36a2eb;" data-label="PC 40%">$1.2M</div><div class="bar-segment" style="width: 30%; background: #4bc0c0;" data-label="Android 30%">$900K</div><div class="bar-segment" style="width: 30%; background: #ff6384;" data-label="iOS 30%">$900K</div></div>
-            </div>
-            <div class="card">
-                <div class="kpi-title">即時登入趨勢 (三線對比 Spec)</div>
-                <div class="svg-container"><svg viewBox="0 0 300 150" preserveAspectRatio="none"><line x1="0" y1="37" x2="300" y2="37" class="grid-line" /><line x1="0" y1="75" x2="300" y2="75" class="grid-line" /><line x1="0" y1="112" x2="300" y2="112" class="grid-line" /><polyline points="0,130 30,120 60,110 90,105 120,100 150,95 180,100 210,110 240,120 270,130 300,140" class="line-day30" /><polyline points="0,110 30,100 60,90 90,80 120,70 150,65 180,70 210,80 240,90 270,100 300,110" class="line-day7" /><polyline points="0,90 30,70 60,50 90,40 120,30 150,25 180,35 210,50 240,60 270,70 300,50" class="line-today" /></svg></div>
-                <div class="legend"><div class="legend-item"><div class="dot" style="background:#0f9d58"></div>今日</div><div class="legend-item"><div class="dot" style="background:#ffce56"></div>7天前</div><div class="legend-item"><div class="dot" style="background:#36a2eb"></div>30天前</div></div>
-            </div>
+            <a href="#" class="item" style="cursor: default; opacity: 0.5;">
+                <span>🛡️ 風控監控中心</span>
+                <span class="tag todo">規劃中</span>
+            </a>
+            
+            <a href="#" class="item" style="cursor: default; opacity: 0.5;">
+                <span>💰 財務報表系統</span>
+                <span class="tag todo">規劃中</span>
+            </a>
         </div>
     </div>
-
 </body>
 </html>
