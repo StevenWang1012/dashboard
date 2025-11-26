@@ -33,24 +33,61 @@
         .note { font-size: 11px; color: #666; margin-top: auto; font-style: italic; }
         .badge { background: #333; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #ccc; }
         .alert-border { border: 2px solid var(--accent-red) !important; box-shadow: 0 0 15px rgba(219, 68, 55, 0.2); }
-        .chart-row { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; height: 350px; }
+        .chart-row { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; height: 380px; } /* 加高高度給X軸標籤 */
 
-        /* === 4. 純 CSS 垂直堆疊柱狀圖 (Revenue: Stacked Bar) === */
-        .v-chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 200px; padding-top: 20px; position: relative; border-bottom: 1px solid #303050; }
-        .v-bar-group { display: flex; flex-direction: column-reverse; width: 12%; height: 100%; position: relative; align-items: center; }
+        /* === 4. 純 CSS 垂直堆疊柱狀圖 (修正版：OX vs 自家幣 + X軸下方標籤) === */
+        .v-chart-container { 
+            display: flex; 
+            align-items: flex-end; 
+            justify-content: space-between; 
+            height: 220px; /* 圖表本體高度 */
+            padding-top: 20px; 
+            margin-bottom: 25px; /* 給下方標籤預留空間 */
+            position: relative; 
+            border-bottom: 1px solid #303050; /* X軸線 */
+        }
+        .v-bar-group { 
+            display: flex; 
+            flex-direction: column-reverse; 
+            width: 12%; 
+            height: 100%; 
+            position: relative; 
+            align-items: center; 
+        }
+        /* 幣種顏色設定 */
         .v-seg { width: 100%; transition: height 0.5s; position: relative; }
-        .bg-pc { background-color: #36a2eb; }      /* PC */
-        .bg-and { background-color: #4bc0c0; }     /* Android */
-        .bg-ios { background-color: #ff6384; }     /* iOS */
-        .v-label { margin-top: 10px; font-size: 11px; color: var(--text-secondary); text-align: center; }
-        .v-bar-group:hover::before { content: attr(data-total); position: absolute; top: -20px; color: #fff; font-size: 10px; }
+        .bg-ox { background-color: #ff9f40; }      /* OX幣 (橘色系) */
+        .bg-own { background-color: #36a2eb; }     /* 自家幣 (藍色系) */
+        
+        /* 修正：X軸標籤放到線下面 */
+        .v-label { 
+            position: absolute;
+            bottom: -25px; /* 強制移到軸線下方 */
+            font-size: 11px; 
+            color: var(--text-secondary); 
+            text-align: center; 
+            width: 120%; /* 稍微寬一點避免換行 */
+        }
+        
+        /* Hover 顯示總額 */
+        .v-bar-group:hover::before { 
+            content: attr(data-total); 
+            position: absolute; 
+            top: -25px; 
+            color: #fff; 
+            font-size: 11px; 
+            background: rgba(0,0,0,0.8);
+            padding: 2px 5px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
 
         /* === 5. SVG 折線圖 (GGR OX: Line Chart) === */
         .svg-container { width: 100%; height: 100%; display: flex; align-items: flex-end; position: relative; }
         svg { width: 100%; height: 100%; overflow: visible; }
-        .line-trend { fill: none; stroke: #0f9d58; stroke-width: 3; } /* GGR 趨勢線 */
+        .line-trend { fill: none; stroke: #0f9d58; stroke-width: 3; } 
         .grid-line  { stroke: #303050; stroke-width: 1; }
-        .legend { display: flex; gap: 15px; margin-top: 15px; font-size: 12px; justify-content: center; }
+        .legend { display: flex; gap: 15px; margin-top: 5px; font-size: 12px; justify-content: center; }
         .legend-item { display: flex; align-items: center; gap: 5px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; }
     </style>
@@ -103,11 +140,71 @@
         </div>
 
         <div class="chart-row">
+            
             <div class="card">
-                <div class="kpi-title">Revenue (累積儲值 - 堆疊佔比)</div>
+                <div class="kpi-title">Revenue (幣種堆疊結構)</div>
                 <div class="kpi-value">$ 3.0M <span style="font-size:12px; color:#666; font-weight:normal;">(今日累積)</span></div>
+                <div class="note">Spec: 顯示 OX幣 / 自家幣 佔比</div>
+                
                 <div class="v-chart-container">
-                    <div class="v-bar-group" data-total="$2.5M"><div class="v-seg bg-pc" style="height: 30%;"></div><div class="v-seg bg-and" style="height: 20%;"></div><div class="v-seg bg-ios" style="height: 10%;"></div><div class="v-label">11/20</div></div>
-                    <div class="v-bar-group" data-total="$2.8M"><div class="v-seg bg-pc" style="height: 35%;"></div><div class="v-seg bg-and" style="height: 25%;"></div><div class="v-seg bg-ios" style="height: 15%;"></div><div class="v-label">11/21</div></div>
-                    <div class="v-bar-group" data-total="$2.2M"><div class="v-seg bg-pc" style="height: 25%;"></div><div class="v-seg bg-and" style="height: 20%;"></div><div class="v-seg bg-ios" style="height: 20%;"></div><div class="v-label">11/22</div></div>
-                    <div class="v-bar-group" data-total="$3.1M"><div class="v-seg bg-pc" style="height: 40%;"></div><div class="v-seg bg-and" style="height: 20%;"></div><div class="v-seg bg-ios" style="height: 15%;"></div><div class="v-label">11/23</div></div>
+                    <div class="v-bar-group" data-total="$2.5M">
+                        <div class="v-seg bg-ox" style="height: 60%;"></div>   <div class="v-seg bg-own" style="height: 20%;"></div>  <div class="v-label">11/20</div>
+                    </div>
+                    <div class="v-bar-group" data-total="$2.8M">
+                        <div class="v-seg bg-ox" style="height: 55%;"></div>
+                        <div class="v-seg bg-own" style="height: 35%;"></div>
+                        <div class="v-label">11/21</div>
+                    </div>
+                    <div class="v-bar-group" data-total="$2.2M">
+                        <div class="v-seg bg-ox" style="height: 40%;"></div>
+                        <div class="v-seg bg-own" style="height: 30%;"></div>
+                        <div class="v-label">11/22</div>
+                    </div>
+                    <div class="v-bar-group" data-total="$3.1M">
+                        <div class="v-seg bg-ox" style="height: 70%;"></div>
+                        <div class="v-seg bg-own" style="height: 20%;"></div>
+                        <div class="v-label">11/23</div>
+                    </div>
+                    <div class="v-bar-group" data-total="$3.5M">
+                        <div class="v-seg bg-ox" style="height: 65%;"></div>
+                        <div class="v-seg bg-own" style="height: 35%;"></div>
+                        <div class="v-label">11/24</div>
+                    </div>
+                    <div class="v-bar-group" data-total="$2.9M">
+                        <div class="v-seg bg-ox" style="height: 50%;"></div>
+                        <div class="v-seg bg-own" style="height: 40%;"></div>
+                        <div class="v-label">昨日</div>
+                    </div>
+                    <div class="v-bar-group" data-total="$3.0M" style="opacity: 1;">
+                        <div class="v-seg bg-ox" style="height: 60%;"></div>
+                        <div class="v-seg bg-own" style="height: 30%;"></div>
+                        <div class="v-label" style="color:var(--accent-green); font-weight:bold;">今日</div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item"><div class="dot bg-ox"></div>OX幣</div>
+                    <div class="legend-item"><div class="dot bg-own"></div>自家幣</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="kpi-title">GGR (OX) Trend (獲利走勢)</div>
+                <div class="kpi-value">$ 1.25M <span style="font-size:12px; color:#666; font-weight:normal;">(今日淨利)</span></div>
+                <div class="svg-container">
+                    <svg viewBox="0 0 300 150" preserveAspectRatio="none">
+                        <line x1="0" y1="37" x2="300" y2="37" class="grid-line" />
+                        <line x1="0" y1="75" x2="300" y2="75" class="grid-line" />
+                        <line x1="0" y1="112" x2="300" y2="112" class="grid-line" />
+                        <polyline points="0,90 30,70 60,50 90,60 120,40 150,30 180,50 210,60 240,40 270,30 300,20" class="line-trend" />
+                    </svg>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><div class="dot" style="background:#0f9d58"></div>GGR (OX) 趨勢</div>
+                </div>
+                <div class="note" style="margin-top:10px;">*Spec: 需顯示 OX 點數總押注 - 總贏分之趨勢</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
