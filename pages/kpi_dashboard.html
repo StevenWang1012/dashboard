@@ -25,23 +25,26 @@
         
         /* === 格線系統 (12欄位) === */
         .grid-container { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; margin-bottom: 25px; }
+        .col-span-4 { grid-column: span 4; } /* 上層大指標 (1/3寬度) */
         
-        /* === 新增：5欄位佈局 (給下方基礎指標用) === */
-        .grid-five { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 25px; }
+        /* === 新增：6欄位佈局 (給下方基礎指標用，剛好塞6個) === */
+        .grid-six { 
+            display: grid; 
+            grid-template-columns: repeat(6, 1fr); /* 均分6等份 */
+            gap: 15px; /* 稍微縮小間距以容納完整數字 */
+            margin-bottom: 25px; 
+        }
 
-        /* 跨欄設定 */
-        .col-span-4 { grid-column: span 4; } /* 上層大指標 (1/3) */
-
-        .card { background-color: var(--bg-card); border-radius: 8px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.2); position: relative; display: flex; flex-direction: column; }
+        .card { background-color: var(--bg-card); border-radius: 8px; padding: 20px 15px; /* 左右padding縮小一點避免數字換行 */ border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.2); position: relative; display: flex; flex-direction: column; }
         
         /* 文字樣式 */
-        .kpi-title { font-size: 14px; color: var(--text-secondary); margin-bottom: 10px; display: flex; justify-content: space-between; width: 100%; }
-        .kpi-value { font-size: 24px; font-weight: bold; margin-bottom: 8px; }
+        .kpi-title { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; display: flex; justify-content: space-between; width: 100%; white-space: nowrap; }
+        .kpi-value { font-size: 22px; /* 字體微調以顯示完整數字 */ font-weight: bold; margin-bottom: 8px; letter-spacing: 0.5px; }
         .kpi-trend { font-size: 13px; font-weight: 500; }
         .trend-up { color: var(--accent-green); }
         .trend-down { color: var(--accent-red); }
         .note { font-size: 11px; color: #666; margin-top: auto; font-style: italic; }
-        .badge { background: #333; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #ccc; }
+        .badge { background: #333; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #ccc; margin-left: 5px; }
         .alert-border { border: 2px solid var(--accent-red) !important; box-shadow: 0 0 15px rgba(219, 68, 55, 0.2); }
 
         /* === 4. Revenue 每小時堆疊圖 === */
@@ -51,7 +54,7 @@
         .bg-ox { background-color: #ff9f40; }  
         .bg-own { background-color: #36a2eb; } 
         .h-label { position: absolute; bottom: -20px; font-size: 10px; color: var(--text-secondary); white-space: nowrap; }
-        .h-bar-group:hover::before { content: attr(data-time) ': ' attr(data-total); position: absolute; top: -30px; color: #fff; font-size: 10px; background: rgba(0,0,0,0.9); padding: 4px 6px; border-radius: 4px; white-space: nowrap; z-index: 10; left: -10px; }
+        .h-bar-group:hover::before { content: attr(data-time) ': ' attr(data-total); position: absolute; top: -30px; color: #fff; font-size: 10px; background: rgba(0,0,0,0.9); padding: 4px 6px; border-radius: 4px; white-space: nowrap; z-index: 10; left: -20px; }
 
         /* === 5. GGR 折線圖 (SVG) === */
         .chart-box { height: 120px; width: 100%; position: relative; margin-top: 10px; }
@@ -86,10 +89,10 @@
         <div class="header">
             <div>
                 <h1>📊 即時 KPI 戰情室 (Live Spec)</h1>
-                <span style="font-size: 12px; color: #888;">Spec V2.1 | P2P 交易重點監控版</span>
+                <span style="font-size: 12px; color: #888;">Spec V2.1 | 完整金額顯示 | 贈禮雙幣監控</span>
             </div>
             <div style="text-align: right;">
-                <div>2025-11-26 14:45:00</div>
+                <div>2025-11-26 14:50:00</div>
                 <div style="color: var(--accent-green); font-size: 12px;">● 系統連線正常</div>
             </div>
         </div>
@@ -98,32 +101,33 @@
             
             <div class="card col-span-4">
                 <div class="kpi-title">Revenue (今日每小時)</div>
-                <div class="kpi-value">$ 320K <span style="font-size:12px; color:#666; font-weight:normal;">(14:00 累計)</span></div>
+                <div class="kpi-value">$ 320,500 <span style="font-size:12px; color:#666; font-weight:normal;">(14:00)</span></div>
+                
                 <div class="hourly-chart-container">
-                    <div class="h-bar-group" data-time="09:00" data-total="$20K"><div class="v-seg bg-ox" style="height: 40%;"></div><div class="v-seg bg-own" style="height: 20%;"></div></div>
+                    <div class="h-bar-group" data-time="09:00" data-total="20,000"><div class="v-seg bg-ox" style="height: 40%;"></div><div class="v-seg bg-own" style="height: 20%;"></div></div>
                     <div class="h-bar-group"><div class="v-seg bg-ox" style="height: 30%;"></div><div class="v-seg bg-own" style="height: 30%;"></div></div>
-                    <div class="h-bar-group" data-time="10:00" data-total="$45K"><div class="v-seg bg-ox" style="height: 50%;"></div><div class="v-seg bg-own" style="height: 30%;"></div></div>
+                    <div class="h-bar-group" data-time="10:00" data-total="45,000"><div class="v-seg bg-ox" style="height: 50%;"></div><div class="v-seg bg-own" style="height: 30%;"></div></div>
                     <div class="h-bar-group"><div class="v-seg bg-ox" style="height: 45%;"></div><div class="v-seg bg-own" style="height: 25%;"></div></div>
-                    <div class="h-bar-group" data-time="11:00" data-total="$30K"><div class="v-seg bg-ox" style="height: 30%;"></div><div class="v-seg bg-own" style="height: 20%;"></div></div>
+                    <div class="h-bar-group" data-time="11:00" data-total="30,000"><div class="v-seg bg-ox" style="height: 30%;"></div><div class="v-seg bg-own" style="height: 20%;"></div></div>
                     <div class="h-bar-group"><div class="v-seg bg-ox" style="height: 60%;"></div><div class="v-seg bg-own" style="height: 20%;"></div></div>
-                    <div class="h-bar-group" data-time="12:00" data-total="$80K"><div class="v-seg bg-ox" style="height: 70%;"></div><div class="v-seg bg-own" style="height: 30%;"></div></div>
+                    <div class="h-bar-group" data-time="12:00" data-total="80,000"><div class="v-seg bg-ox" style="height: 70%;"></div><div class="v-seg bg-own" style="height: 30%;"></div></div>
                     <div class="h-bar-group"><div class="v-seg bg-ox" style="height: 65%;"></div><div class="v-seg bg-own" style="height: 35%;"></div></div>
-                    <div class="h-bar-group" data-time="13:00" data-total="$60K"><div class="v-seg bg-ox" style="height: 50%;"></div><div class="v-seg bg-own" style="height: 40%;"></div></div>
+                    <div class="h-bar-group" data-time="13:00" data-total="60,000"><div class="v-seg bg-ox" style="height: 50%;"></div><div class="v-seg bg-own" style="height: 40%;"></div></div>
                     <div class="h-bar-group"><div class="v-seg bg-ox" style="height: 40%;"></div><div class="v-seg bg-own" style="height: 30%;"></div></div>
-                    <div class="h-bar-group" data-time="14:00" data-total="$55K" style="opacity: 1;"><div class="v-seg bg-ox" style="height: 55%;"></div><div class="v-seg bg-own" style="height: 35%;"></div></div>
+                    <div class="h-bar-group" data-time="14:00" data-total="55,000" style="opacity: 1;"><div class="v-seg bg-ox" style="height: 55%;"></div><div class="v-seg bg-own" style="height: 35%;"></div></div>
                     <div class="h-label" style="left: 0;">09:00</div>
                     <div class="h-label" style="left: 40%;">12:00</div>
                     <div class="h-label" style="right: 0;">14:00</div>
                 </div>
                 <div class="legend">
-                    <div class="legend-item"><div class="dot bg-ox"></div>OX</div>
-                    <div class="legend-item"><div class="dot bg-own"></div>自家</div>
+                    <div class="legend-item"><div class="dot bg-ox"></div>OX幣</div>
+                    <div class="legend-item"><div class="dot bg-own"></div>自家幣</div>
                 </div>
             </div>
 
             <div class="card col-span-4">
-                <div class="kpi-title">GGR (平台毛利) <span class="badge">Net Profit</span></div>
-                <div class="kpi-value">$ 1.8M</div>
+                <div class="kpi-title">GGR (自家幣) <span class="badge">Net</span></div>
+                <div class="kpi-value">$ 1,800,520</div>
                 <div class="chart-box">
                     <div class="svg-container">
                         <svg viewBox="0 0 300 100" preserveAspectRatio="none">
@@ -137,7 +141,7 @@
 
             <div class="card col-span-4">
                 <div class="kpi-title">GGR (OX) <span class="badge">Bet - Win</span></div>
-                <div class="kpi-value">$ 1.25M</div>
+                <div class="kpi-value">$ 1,250,800</div>
                 <div class="chart-box">
                     <div class="svg-container">
                         <svg viewBox="0 0 300 100" preserveAspectRatio="none">
@@ -151,13 +155,12 @@
 
         </div>
 
-        <div class="grid-five">
+        <div class="grid-six">
             
             <div class="card alert-border">
                 <div class="kpi-title">RTP (殺率)</div>
                 <div class="kpi-value">102.50</div>
                 <div class="kpi-trend trend-down">▲ Risk</div>
-                <div class="note" style="color: var(--accent-red);">*Spec: >100 紅框</div>
             </div>
 
             <div class="card">
@@ -175,18 +178,21 @@
             <div class="card">
                 <div class="kpi-title">User (活躍)</div>
                 <div class="kpi-value">8,920</div>
-                <div class="svg-container" style="height: 40px; margin-top: 10px;">
-                     <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                        <polyline points="0,20 20,15 40,5 60,10 80,5 100,0" fill="none" stroke="#e0e0e0" stroke-width="2" />
-                    </svg>
-                </div>
+                <div class="note" style="margin-top:5px;">*DAU</div>
             </div>
 
             <div class="card">
-                <div class="kpi-title">Gift (贈禮點數)</div>
-                <div class="kpi-value">520K</div>
+                <div class="kpi-title" style="color:#36a2eb;">Gift (自家幣)</div>
+                <div class="kpi-value">520,000</div>
                 <div class="kpi-trend trend-up">▲ 12.5%</div>
-                <div class="note" style="color:#ffce56;">*Spec: 幣商監控指標 </div>
+                <div class="note">*P2P 交易</div>
+            </div>
+
+            <div class="card">
+                <div class="kpi-title" style="color:#ff9f40;">Gift (OX幣)</div>
+                <div class="kpi-value">125,000</div>
+                <div class="kpi-trend trend-up">▲ 5.0%</div>
+                <div class="note">*P2P 交易</div>
             </div>
 
         </div>
