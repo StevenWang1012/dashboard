@@ -33,62 +33,28 @@
         .note { font-size: 11px; color: #666; margin-top: auto; font-style: italic; }
         .badge { background: #333; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #ccc; }
         .alert-border { border: 2px solid var(--accent-red) !important; box-shadow: 0 0 15px rgba(219, 68, 55, 0.2); }
-        .chart-row { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; height: 350px; } /* 加高一點給圖表 */
+        .chart-row { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; height: 350px; }
 
-        /* === 4. 改良版：純 CSS 垂直堆疊柱狀圖 (Vertical Stacked Bar) === */
-        .v-chart-container {
-            display: flex;
-            align-items: flex-end; /* 底部對齊 */
-            justify-content: space-between;
-            height: 200px; /* 圖表高度 */
-            padding-top: 20px;
-            position: relative;
-            border-bottom: 1px solid #303050; /* X軸線 */
-        }
-        .v-bar-group {
-            display: flex;
-            flex-direction: column-reverse; /* 讓堆疊從底部開始 */
-            width: 12%; /* 柱子寬度 */
-            height: 100%;
-            position: relative;
-            align-items: center;
-        }
-        /* 柱子區段 (顏色) */
+        /* === 4. 純 CSS 垂直堆疊柱狀圖 (Revenue: Stacked Bar) === */
+        /* 對應 Spec: 數值卡 + 堆疊長條圖 (iOS/Android/PC) */
+        .v-chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 200px; padding-top: 20px; position: relative; border-bottom: 1px solid #303050; }
+        .v-bar-group { display: flex; flex-direction: column-reverse; width: 12%; height: 100%; position: relative; align-items: center; }
         .v-seg { width: 100%; transition: height 0.5s; position: relative; }
-        .bg-pc { background-color: #36a2eb; }      /* 藍 */
-        .bg-and { background-color: #4bc0c0; }     /* 綠 */
-        .bg-ios { background-color: #ff6384; }     /* 紅 */
-        
-        /* 柱子上方的總額數字 */
-        .v-bar-group::before {
-            content: attr(data-total);
-            position: absolute;
-            top: -20px; /* 根據柱子高度動態調整比較難，這裡固定顯示在頂部或 hover 顯示 */
-            color: #fff; font-size: 10px;
-            opacity: 0; transition: opacity 0.2s;
-        }
-        .v-bar-group:hover::before { opacity: 1; top: 0; z-index: 10; }
+        .bg-pc { background-color: #36a2eb; }      /* PC */
+        .bg-and { background-color: #4bc0c0; }     /* Android */
+        .bg-ios { background-color: #ff6384; }     /* iOS */
+        .v-label { margin-top: 10px; font-size: 11px; color: var(--text-secondary); text-align: center; }
+        .v-bar-group:hover::before { content: attr(data-total); position: absolute; top: -20px; color: #fff; font-size: 10px; }
 
-        /* X軸日期標籤 */
-        .v-label {
-            margin-top: 10px;
-            font-size: 11px;
-            color: var(--text-secondary);
-            text-align: center;
-        }
-
-        /* 圖例小點 */
+        /* === 5. SVG 折線圖 (GGR OX: Line Chart) === */
+        /* 對應 Spec: 數值卡 + 折線圖 */
+        .svg-container { width: 100%; height: 100%; display: flex; align-items: flex-end; position: relative; }
+        svg { width: 100%; height: 100%; overflow: visible; }
+        .line-trend { fill: none; stroke: #0f9d58; stroke-width: 3; } /* GGR 趨勢線 */
+        .grid-line  { stroke: #303050; stroke-width: 1; }
         .legend { display: flex; gap: 15px; margin-top: 15px; font-size: 12px; justify-content: center; }
         .legend-item { display: flex; align-items: center; gap: 5px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; }
-
-        /* === 5. SVG 三線圖 (Login Trend) === */
-        .svg-container { width: 100%; height: 100%; display: flex; align-items: flex-end; position: relative; }
-        svg { width: 100%; height: 100%; overflow: visible; }
-        .line-today { fill: none; stroke: #0f9d58; stroke-width: 3; }
-        .line-day7  { fill: none; stroke: #ffce56; stroke-width: 2; stroke-dasharray: 6, 4; }
-        .line-day30 { fill: none; stroke: #36a2eb; stroke-width: 2; stroke-dasharray: 2, 4; }
-        .grid-line  { stroke: #303050; stroke-width: 1; }
     </style>
 </head>
 <body>
@@ -113,7 +79,7 @@
         <div class="header">
             <div>
                 <h1>📊 即時 KPI 戰情室 (Live Spec)</h1>
-                <span style="font-size: 12px; color: #888;">Spec V2.1 | UAT 視覺標準 | 60s 更新</span>
+                <span style="font-size: 12px; color: #888;">Spec V2.1 | 對應 Spec P.3 表格內容</span>
             </div>
             <div style="text-align: right;">
                 <div>2025-11-26 14:30:00</div>
@@ -126,66 +92,35 @@
                 <div class="kpi-title">RTP (殺率)<span class="badge">Float (2)</span></div>
                 <div class="kpi-value">102.50</div>
                 <div class="kpi-trend trend-down">▲ 5.2% (Vs.昨日)</div>
-                <div class="note" style="color: var(--accent-red);">*Spec: >100 紅框警示</div>
+                <div class="note" style="color: var(--accent-red);">*Spec: >100 必須紅框警示</div>
             </div>
+
             <div class="card">
-                <div class="kpi-title">GGR (平台毛利)<span class="badge">Net</span></div>
+                <div class="kpi-title">GGR (OX)<span class="badge">Bet - Win</span></div>
                 <div class="kpi-value">$ 1.25M</div>
                 <div class="kpi-trend trend-up">▲ 5.5% (Vs.昨日)</div>
-                <div class="note">*Spec: <0 紅框警示</div>
+                <div class="note">*Spec: 小於0框線變紅 (OX點數)</div>
             </div>
+
             <div class="card"><div class="kpi-title">PU (付費人數)</div><div class="kpi-value">3,542</div><div class="kpi-trend trend-up">▲ 2.1%</div></div>
+            
             <div class="card"><div class="kpi-title">NU (新註冊)</div><div class="kpi-value">450</div><div class="kpi-trend trend-down">▼ 0.5%</div></div>
         </div>
 
         <div class="chart-row">
             
             <div class="card">
-                <div class="kpi-title">Revenue (近7日堆疊趨勢)</div>
+                <div class="kpi-title">Revenue (累積儲值 - 堆疊佔比)</div>
                 <div class="kpi-value">$ 3.0M <span style="font-size:12px; color:#666; font-weight:normal;">(今日累積)</span></div>
                 
                 <div class="v-chart-container">
-                    <div class="v-bar-group">
-                        <div class="v-seg bg-pc" style="height: 30%;"></div>
-                        <div class="v-seg bg-and" style="height: 20%;"></div>
-                        <div class="v-seg bg-ios" style="height: 10%;"></div>
-                        <div class="v-label">11/20</div>
-                    </div>
-                    <div class="v-bar-group">
-                        <div class="v-seg bg-pc" style="height: 35%;"></div>
-                        <div class="v-seg bg-and" style="height: 25%;"></div>
-                        <div class="v-seg bg-ios" style="height: 15%;"></div>
-                        <div class="v-label">11/21</div>
-                    </div>
-                    <div class="v-bar-group">
-                        <div class="v-seg bg-pc" style="height: 25%;"></div>
-                        <div class="v-seg bg-and" style="height: 20%;"></div>
-                        <div class="v-seg bg-ios" style="height: 20%;"></div>
-                        <div class="v-label">11/22</div>
-                    </div>
-                    <div class="v-bar-group">
-                        <div class="v-seg bg-pc" style="height: 40%;"></div>
-                        <div class="v-seg bg-and" style="height: 20%;"></div>
-                        <div class="v-seg bg-ios" style="height: 15%;"></div>
-                        <div class="v-label">11/23</div>
-                    </div>
-                    <div class="v-bar-group">
-                        <div class="v-seg bg-pc" style="height: 30%;"></div>
-                        <div class="v-seg bg-and" style="height: 30%;"></div>
-                        <div class="v-seg bg-ios" style="height: 20%;"></div>
-                        <div class="v-label">11/24</div>
-                    </div>
-                    <div class="v-bar-group">
-                        <div class="v-seg bg-pc" style="height: 35%;"></div>
-                        <div class="v-seg bg-and" style="height: 25%;"></div>
-                        <div class="v-seg bg-ios" style="height: 25%;"></div>
-                        <div class="v-label">昨日</div>
-                    </div>
-                    <div class="v-bar-group" style="opacity: 1;"> <div class="v-seg bg-pc" style="height: 40%;"></div>
-                        <div class="v-seg bg-and" style="height: 30%;"></div>
-                        <div class="v-seg bg-ios" style="height: 30%;"></div>
-                        <div class="v-label" style="color:var(--accent-green); font-weight:bold;">今日</div>
-                    </div>
+                    <div class="v-bar-group" data-total="$2.5M"><div class="v-seg bg-pc" style="height: 30%;"></div><div class="v-seg bg-and" style="height: 20%;"></div><div class="v-seg bg-ios" style="height: 10%;"></div><div class="v-label">11/20</div></div>
+                    <div class="v-bar-group" data-total="$2.8M"><div class="v-seg bg-pc" style="height: 35%;"></div><div class="v-seg bg-and" style="height: 25%;"></div><div class="v-seg bg-ios" style="height: 15%;"></div><div class="v-label">11/21</div></div>
+                    <div class="v-bar-group" data-total="$2.2M"><div class="v-seg bg-pc" style="height: 25%;"></div><div class="v-seg bg-and" style="height: 20%;"></div><div class="v-seg bg-ios" style="height: 20%;"></div><div class="v-label">11/22</div></div>
+                    <div class="v-bar-group" data-total="$3.1M"><div class="v-seg bg-pc" style="height: 40%;"></div><div class="v-seg bg-and" style="height: 20%;"></div><div class="v-seg bg-ios" style="height: 15%;"></div><div class="v-label">11/23</div></div>
+                    <div class="v-bar-group" data-total="$3.5M"><div class="v-seg bg-pc" style="height: 30%;"></div><div class="v-seg bg-and" style="height: 30%;"></div><div class="v-seg bg-ios" style="height: 20%;"></div><div class="v-label">11/24</div></div>
+                    <div class="v-bar-group" data-total="$2.9M"><div class="v-seg bg-pc" style="height: 35%;"></div><div class="v-seg bg-and" style="height: 25%;"></div><div class="v-seg bg-ios" style="height: 25%;"></div><div class="v-label">昨日</div></div>
+                    <div class="v-bar-group" data-total="$3.0M" style="opacity: 1;"><div class="v-seg bg-pc" style="height: 40%;"></div><div class="v-seg bg-and" style="height: 30%;"></div><div class="v-seg bg-ios" style="height: 30%;"></div><div class="v-label" style="color:var(--accent-green); font-weight:bold;">今日</div></div>
                 </div>
 
                 <div class="legend">
@@ -196,9 +131,21 @@
             </div>
 
             <div class="card">
-                <div class="kpi-title">即時登入趨勢 (三線對比 Spec)</div>
-                <div class="svg-container"><svg viewBox="0 0 300 150" preserveAspectRatio="none"><line x1="0" y1="37" x2="300" y2="37" class="grid-line" /><line x1="0" y1="75" x2="300" y2="75" class="grid-line" /><line x1="0" y1="112" x2="300" y2="112" class="grid-line" /><polyline points="0,130 30,120 60,110 90,105 120,100 150,95 180,100 210,110 240,120 270,130 300,140" class="line-day30" /><polyline points="0,110 30,100 60,90 90,80 120,70 150,65 180,70 210,80 240,90 270,100 300,110" class="line-day7" /><polyline points="0,90 30,70 60,50 90,40 120,30 150,25 180,35 210,50 240,60 270,70 300,50" class="line-today" /></svg></div>
-                <div class="legend"><div class="legend-item"><div class="dot" style="background:#0f9d58"></div>今日</div><div class="legend-item"><div class="dot" style="background:#ffce56"></div>7天前</div><div class="legend-item"><div class="dot" style="background:#36a2eb"></div>30天前</div></div>
+                <div class="kpi-title">GGR (OX) Trend (獲利走勢)</div>
+                <div class="kpi-value">$ 1.25M <span style="font-size:12px; color:#666; font-weight:normal;">(今日淨利)</span></div>
+                
+                <div class="svg-container">
+                    <svg viewBox="0 0 300 150" preserveAspectRatio="none">
+                        <line x1="0" y1="37" x2="300" y2="37" class="grid-line" />
+                        <line x1="0" y1="75" x2="300" y2="75" class="grid-line" />
+                        <line x1="0" y1="112" x2="300" y2="112" class="grid-line" />
+                        <polyline points="0,90 30,70 60,50 90,60 120,40 150,30 180,50 210,60 240,40 270,30 300,20" class="line-trend" />
+                    </svg>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><div class="dot" style="background:#0f9d58"></div>GGR (OX) 趨勢</div>
+                </div>
+                <div class="note" style="margin-top:10px;">*Spec: 需顯示 OX 點數總押注 - 總贏分之趨勢</div>
             </div>
         </div>
     </div>
