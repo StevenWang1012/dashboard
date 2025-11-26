@@ -1,1 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星運娛樂城 - 風控監控中心</title>
+    <style>
+        /* === 沿用全局設定 (保持風格一致) === */
+        :root { --bg-dark: #1a1a2e; --sidebar-bg: #11111f; --bg-card: #16213e; --text-primary: #e0e0e0; --text-secondary: #a0a0a0; --accent-green: #0f9d58; --accent-red: #db4437; --active-item: #2c2c45; --border-color: #303050; }
+        body { font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; background-color: var(--bg-dark); color: var(--text-primary); margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
 
+        /* Sidebar & Layout */
+        .sidebar { width: 240px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; }
+        .logo-area { height: 60px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border-color); font-size: 18px; font-weight: bold; color: #fff; letter-spacing: 1px; }
+        .menu { flex: 1; overflow-y: auto; padding: 20px 0; }
+        .menu-category { font-size: 12px; color: #666; padding: 10px 20px 5px; text-transform: uppercase; }
+        .menu-item { display: flex; align-items: center; padding: 12px 20px; color: var(--text-secondary); text-decoration: none; transition: 0.2s; font-size: 14px; border-left: 3px solid transparent; }
+        .menu-item:hover { background-color: rgba(255,255,255,0.05); color: #fff; }
+        .menu-item.active { background-color: var(--active-item); color: #fff; border-left-color: var(--accent-red); } /* 風控頁面用紅色Active */
+        .icon { margin-right: 10px; width: 16px; text-align: center; }
+        .main-content { flex: 1; overflow-y: auto; padding: 30px; }
+        
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
+        
+        /* === 表格樣式 (Spec P.16) === */
+        .data-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 8px; overflow: hidden; font-size: 14px; }
+        .data-table th { background: #111; color: #aaa; text-align: left; padding: 15px; font-weight: normal; border-bottom: 1px solid var(--border-color); }
+        .data-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #fff; vertical-align: middle; }
+        .data-table tr:hover { background: rgba(255,255,255,0.02); }
+        
+        /* 風控標籤 */
+        .tag-risk { background: rgba(219, 68, 55, 0.2); color: #ff6b6b; padding: 4px 8px; border-radius: 4px; font-size: 12px; border: 1px solid rgba(219, 68, 55, 0.3); }
+        .tag-warn { background: rgba(255, 159, 64, 0.2); color: #ffbf80; padding: 4px 8px; border-radius: 4px; font-size: 12px; border: 1px solid rgba(255, 159, 64, 0.3); }
+        
+        /* 按鈕 */
+        .btn-action { background: transparent; border: 1px solid var(--border-color); color: #ccc; padding: 6px 12px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .btn-action:hover { background: #333; color: white; }
+        .btn-block { background: var(--accent-red); color: white; border: none; }
+        .btn-block:hover { background: #c53929; }
+        
+        /* 封鎖狀態切換 */
+        .status-blocked { color: var(--accent-red); font-weight: bold; }
+        .status-normal { color: var(--accent-green); }
+
+        /* 篩選器列 */
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .filter-select { background: var(--bg-card); border: 1px solid var(--border-color); color: white; padding: 8px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo-area">🌟 星運娛樂城</div>
+        <div class="menu">
+            <div class="menu-category">總覽</div>
+            <a href="kpi_dashboard.html" class="menu-item"><span class="icon">📊</span> 即時 KPI 牆</a>
+            <div class="menu-category">營運分析</div>
+            <a href="#" class="menu-item"><span class="icon">👥</span> 登入數據</a>
+            <a href="#" class="menu-item"><span class="icon">📈</span> 營運報表</a>
+            <div class="menu-category">金流管理</div>
+            <a href="#" class="menu-item"><span class="icon">💰</span> 金幣數據</a>
+            <div class="menu-category" style="color: #db4437;">風控中心 (Risk)</div>
+            <a href="#" class="menu-item active"><span class="icon">🛡️</span> 高風險明細</a>
+        </div>
+        <a href="../index.html" class="menu-item" style="border-top: 1px solid #303050;"><span class="icon">🔙</span> 返回目錄</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1>🛡️ 高風險玩家監控 (Risk Control)</h1>
+                <span style="font-size: 12px; color: #888;">Spec P.16 [cite: 413] | 即時異常阻斷</span>
+            </div>
+            <div>
+                <button class="btn-action" style="background:var(--accent-red); border:none; color:white;">🔥 一鍵凍結所有高風險</button>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <select class="filter-select"><option>全部風險類型</option><option>RTP 異常</option><option>贈禮異常</option></select>
+            <select class="filter-select"><option>狀態: 未處理</option><option>已處理</option></select>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th width="120">日期</th>
+                    <th width="120">風控代碼</th>
+                    <th>玩家 (UID/暱稱)</th>
+                    <th>異常原因 [cite: 417]</th>
+                    <th>涉及金額</th>
+                    <th>封鎖狀態 [cite: 417]</th>
+                    <th width="150">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2025-11-26 14:20</td>
+                    <td>RC-251126-01</td>
+                    <td>
+                        <div style="font-weight:bold;">109283</div>
+                        <div style="font-size:12px; color:#888;">BigWinner88</div>
+                    </td>
+                    <td><span class="tag-risk">RTP 異常 (250%)</span></td>
+                    <td style="color:#ff6b6b;">$ 1,500,000</td>
+                    <td><span class="status-normal">● 未封鎖</span></td>
+                    <td>
+                        <button class="btn-action btn-block">封鎖</button>
+                        <button class="btn-action">查看</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2025-11-26 13:45</td>
+                    <td>RC-251126-02</td>
+                    <td>
+                        <div style="font-weight:bold;">100552</div>
+                        <div style="font-size:12px; color:#888;">CoinSeller_A</div>
+                    </td>
+                    <td><span class="tag-warn">贈禮集中異常</span></td>
+                    <td style="color:#ff9f40;">$ 5,200,000</td>
+                    <td><span class="status-blocked">✖ 已封鎖</span></td>
+                    <td>
+                        <button class="btn-action" disabled style="opacity:0.5;">已處理</button>
+                        <button class="btn-action">查看</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2025-11-26 12:10</td>
+                    <td>RC-251126-03</td>
+                    <td>
+                        <div style="font-weight:bold;">100331</div>
+                        <div style="font-size:12px; color:#888;">David_Chen</div>
+                    </td>
+                    <td><span class="tag-risk">IP 關聯異常</span></td>
+                    <td>-</td>
+                    <td><span class="status-normal">● 未封鎖</span></td>
+                    <td>
+                        <button class="btn-action btn-block">封鎖</button>
+                        <button class="btn-action">查看</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
