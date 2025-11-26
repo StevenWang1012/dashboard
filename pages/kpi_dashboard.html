@@ -68,4 +68,152 @@
         .note { font-size: 11px; color: #666; margin-top: 8px; font-style: italic; }
         .badge { background: #333; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #ccc; }
 
-        /* === Spec重點：風控警示框 (紅
+        /* === Spec重點：風控警示框 (紅框) === */
+        /* 當 RTP > 100 或 GGR < 0 時使用此 Class */
+        .alert-border {
+            border: 2px solid var(--accent-red) !important;
+            box-shadow: 0 0 15px rgba(219, 68, 55, 0.2);
+        }
+
+        /* === 圖表區佈局 === */
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* 左1右2比例 */
+            gap: 20px;
+            height: 320px;
+        }
+
+        /* === 純 CSS 堆疊長條圖 (Revenue) === */
+        .stacked-bar-container {
+            margin-top: 40px;
+            width: 100%; height: 50px;
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .bar-segment {
+            height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 12px; font-weight: bold;
+            position: relative;
+            transition: width 0.5s;
+        }
+        /* 標籤 Tooltip */
+        .bar-segment::after {
+            content: attr(data-label);
+            position: absolute; top: -25px;
+            color: #ccc; font-size: 12px; white-space: nowrap;
+        }
+
+        /* === SVG 三線圖 (Login Trend) === */
+        .svg-container {
+            width: 100%; height: 100%;
+            display: flex; align-items: flex-end;
+            position: relative;
+        }
+        svg { width: 100%; height: 100%; overflow: visible; }
+        
+        /* 線條樣式定義 (對應 Spec P.4) */
+        .line-today { fill: none; stroke: #0f9d58; stroke-width: 3; } /* 實線 */
+        .line-day7  { fill: none; stroke: #ffce56; stroke-width: 2; stroke-dasharray: 6, 4; } /* 虛線 */
+        .line-day30 { fill: none; stroke: #36a2eb; stroke-width: 2; stroke-dasharray: 2, 4; } /* 點線 */
+        .grid-line  { stroke: #303050; stroke-width: 1; }
+
+        /* 圖例 */
+        .legend { display: flex; gap: 15px; margin-top: 15px; font-size: 12px; justify-content: center; }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <a href="../index.html" class="btn-back">返回規格目錄 (Back to Menu)</a>
+    </div>
+
+    <div class="header">
+        <div>
+            <h1>📊 即時 KPI 戰情室 (Live Spec)</h1>
+            <span style="font-size: 12px; color: #888;">Spec V2.1 | UAT 視覺標準 | 60s 更新</span>
+        </div>
+        <div style="text-align: right;">
+            <div>2025-11-26 14:30:00</div>
+            <div style="color: var(--accent-green); font-size: 12px;">● 系統連線正常</div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="card alert-border">
+            <div class="kpi-title">
+                RTP (殺率)
+                <span class="badge">Float (2)</span>
+            </div>
+            <div class="kpi-value">102.50</div>
+            <div class="kpi-trend trend-down">▲ 5.2% (Vs.昨日)</div>
+            [cite_start]<div class="note" style="color: var(--accent-red);">*Spec: >100 必須紅框警示 [cite: 77]</div>
+        </div>
+
+        <div class="card">
+            <div class="kpi-title">
+                GGR (平台毛利)
+                <span class="badge">Net Profit</span>
+            </div>
+            <div class="kpi-value">$ 1,250,800</div>
+            <div class="kpi-trend trend-up">▲ 5.5% (Vs.昨日)</div>
+            [cite_start]<div class="note">*Spec: <0 必須紅框警示 [cite: 77]</div>
+        </div>
+
+        <div class="card">
+            <div class="kpi-title">PU (付費人數)</div>
+            <div class="kpi-value">3,542</div>
+            <div class="kpi-trend trend-up">▲ 2.1%</div>
+        </div>
+
+        <div class="card">
+            <div class="kpi-title">NU (新註冊)</div>
+            <div class="kpi-value">450</div>
+            <div class="kpi-trend trend-down">▼ 0.5%</div>
+        </div>
+    </div>
+
+    <div class="chart-row">
+        
+        <div class="card">
+            <div class="kpi-title">Revenue (堆疊結構 Spec)</div>
+            <div class="kpi-value">$ 3,000,000</div>
+            [cite_start]<div class="note">Spec: 必須顯示 PC / Android / iOS 佔比 [cite: 77]</div>
+            
+            <div class="stacked-bar-container">
+                <div class="bar-segment" style="width: 40%; background: #36a2eb;" data-label="PC 40%">$1.2M</div>
+                <div class="bar-segment" style="width: 30%; background: #4bc0c0;" data-label="Android 30%">$900K</div>
+                <div class="bar-segment" style="width: 30%; background: #ff6384;" data-label="iOS 30%">$900K</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="kpi-title">即時登入趨勢 (三線對比 Spec)</div>
+            
+            <div class="svg-container">
+                <svg viewBox="0 0 300 150" preserveAspectRatio="none">
+                    <line x1="0" y1="37" x2="300" y2="37" class="grid-line" />
+                    <line x1="0" y1="75" x2="300" y2="75" class="grid-line" />
+                    <line x1="0" y1="112" x2="300" y2="112" class="grid-line" />
+
+                    <polyline points="0,130 30,120 60,110 90,105 120,100 150,95 180,100 210,110 240,120 270,130 300,140" class="line-day30" />
+                    
+                    <polyline points="0,110 30,100 60,90 90,80 120,70 150,65 180,70 210,80 240,90 270,100 300,110" class="line-day7" />
+
+                    <polyline points="0,90 30,70 60,50 90,40 120,30 150,25 180,35 210,50 240,60 270,70 300,50" class="line-today" />
+                </svg>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item"><div class="dot" style="background:#0f9d58"></div>今日 (實線)</div>
+                <div class="legend-item"><div class="dot" style="background:#ffce56"></div>7天前 (虛線)</div>
+                <div class="legend-item"><div class="dot" style="background:#36a2eb"></div>30天前 (點線)</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
